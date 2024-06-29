@@ -1,26 +1,31 @@
-const express = require("express")
-const cors = require('cors')
-require('dotenv').config();
-const { connectTOMongoDB } = require("./connect")
-const app = express()
+const express = require('express');
 const bodyParser = require('body-parser');
-const mongoURI = process.env.MONGO_URI
+const cors = require('cors');  // Import the cors package
+const dotenv = require('dotenv');
+const User = require('./models/User');
+const Review = require('./models/Review');
+const routes = require('./routes/routes');
 
-const PORT = 5000
-const apiRoutes = require('./routes/review')
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }))
-connectTOMongoDB(mongoURI)
+dotenv.config();
 
-app.get("/",(req,res)=>{
-    res.send("All is well!")
-} );
-app.use("/api",apiRoutes);
+const app = express();
 
+// Enable CORS for all origins (you can restrict this to specific origins)
+app.use(cors());
 
+// Middleware setup
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+// Create tables if they don't exist
+(async () => {
+  await User.createUserTable();
+  await Review.createReviewTable();
+})();
 
+app.use('/api', routes);
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log("Server is running at", PORT);
+  console.log(`Server is running on port ${PORT}`);
 });
