@@ -1,6 +1,6 @@
 ### Clone the Repository
 
-git clone https://github.com/yourusername/backend-repo.git
+git clone https://github.com/thirupathireddykr/brewery-app-backend.git
 cd backend-repo
 
 ### Install Dependencies
